@@ -60,7 +60,7 @@ const CreatePage = () => {
         />
         <button
           type="submit"
-          className="bg-violet-500 text-white py-2 px-4 rounded hover:bg-violet-600"
+          className="bg-violet-500 text-white py-2 px-4 rounded hover:bg-violet-600 cursor-pointer"
         >
           Save Note
         </button>
