@@ -1,36 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router";
-import { ArrowLeftIcon } from "lucide-react";
+import { useParams, useNavigate, Link } from "react-router";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import NoteForm from "../components/NoteForm";
+import { ArrowLeftIcon } from "lucide-react";
 
 const EditPage = () => {
-  const { id } = useParams(); // note ID from URL
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [noteToEdit, setNoteToEdit] = useState(null);
 
   useEffect(() => {
     const notes = JSON.parse(localStorage.getItem("notes")) || [];
-    const noteToEdit = notes.find((note) => note.id === Number(id));
-
-    if (!noteToEdit) {
+    const foundNote = notes.find((note) => note.id === Number(id));
+    if (!foundNote) {
       toast.error("Note not found!");
-      return navigate("/");
+      navigate("/");
+    } else {
+      setNoteToEdit(foundNote);
     }
-
-    setTitle(noteToEdit.title);
-    setContent(noteToEdit.content);
   }, [id, navigate]);
 
-  const handleUpdate = (e) => {
-    e.preventDefault();
-
-    const updatedNote = { id: Number(id), title, content };
+  const handleUpdate = ({ title, content }) => {
     const notes = JSON.parse(localStorage.getItem("notes")) || [];
 
     const updatedNotes = notes.map((note) =>
-      note.id === Number(id) ? updatedNote : note
+      note.id === Number(id)
+        ? { ...note, title, content, updatedAt: Date.now() }
+        : note
     );
 
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
@@ -47,30 +44,13 @@ const EditPage = () => {
         </Link>
         <h3 className="text-2xl font-bold text-blue-700">Edit Note</h3>
       </div>
-
-      <form onSubmit={handleUpdate}>
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full border border-gray-300 p-2 rounded mb-4"
-          required
+      {noteToEdit && (
+        <NoteForm
+          initialNote={noteToEdit}
+          onSubmit={handleUpdate}
+          buttonLabel="Update Note"
         />
-        <textarea
-          placeholder="Content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="w-full border border-gray-300 p-2 rounded h-40 mb-4"
-          required
-        />
-        <button
-          type="submit"
-          className="bg-violet-500 text-white py-2 px-4 rounded hover:bg-violet-600"
-        >
-          Update Note
-        </button>
-      </form>
+      )}
     </div>
   );
 };

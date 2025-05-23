@@ -1,29 +1,22 @@
+import { toast } from "react-hot-toast";
+import { useNavigate, Link } from "react-router";
+import NoteForm from "../components/NoteForm";
 import { ArrowLeftIcon } from "lucide-react";
-import { Link, useNavigate } from "react-router";
-import { useState } from "react";
-import toast from "react-hot-toast";
 
 const CreatePage = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleCreate = ({ title, content }) => {
+    const newNote = {
+      id: Date.now(),
+      title,
+      content,
+      createdAt: Date.now(),
+      updatedAt: null,
+    };
 
-    console.log("Note created:", { title, content });
-    const newNote = { title, content, id: Date.now() };
-
-    // Fetch existing notes from localStorage
-    const existingNotes = JSON.parse(localStorage.getItem("notes")) || [];
-    // Add new note to the list
-    const updatedNotes = [newNote, ...existingNotes];
-    // Save back to localStorage
-    localStorage.setItem("notes", JSON.stringify(updatedNotes));
-
-    setTitle("");
-    setContent("");
+    const notes = JSON.parse(localStorage.getItem("notes")) || [];
+    localStorage.setItem("notes", JSON.stringify([...notes, newNote]));
 
     toast.success("Note created successfully!");
     navigate("/");
@@ -31,40 +24,14 @@ const CreatePage = () => {
 
   return (
     <div className="bg-violet-300 max-w-2xl mx-auto p-4 rounded shadow">
-      <div className=" flex items-center justify-between mb-4">
-        <Link
-          to={"/"}
-          className="flex items-center gap-2 text-blue-600 hover:underline"
-        >
+      <div className="flex items-center justify-between mb-4">
+        <Link to="/" className="flex items-center gap-2 text-blue-600 hover:underline">
           <ArrowLeftIcon className="size-5" />
-          <span className="hidden sm:inline">Back to Home Page</span>
+          <span className="hidden sm:inline">Back to Home</span>
         </Link>
-        <h3 className="text-2xl font-bold  text-blue-700">Create New Note</h3>
+        <h3 className="text-2xl font-bold text-blue-700">Create Note</h3>
       </div>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full border border-gray-300 p-2 rounded"
-          required
-        />
-        <textarea
-          placeholder="Content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="w-full border border-gray-300 p-2 rounded h-40"
-          required
-        />
-        <button
-          type="submit"
-          className="bg-violet-500 text-white py-2 px-4 rounded hover:bg-violet-600 cursor-pointer"
-        >
-          Save Note
-        </button>
-      </form>
+      <NoteForm onSubmit={handleCreate} buttonLabel="Create Note" />
     </div>
   );
 };

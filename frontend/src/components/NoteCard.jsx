@@ -28,7 +28,9 @@ const NoteCard = ({ note, onDelete }) => {
           />
         </div>
         <span className="text-sm text-gray-500">
-          {new Date(note.id).toLocaleDateString()}
+          {note.updatedAt
+            ? `Edited: ${new Date(note.updatedAt).toLocaleDateString()}`
+            : `Created: ${new Date(note.id).toLocaleDateString()}`}
         </span>
       </div>
     </div>
