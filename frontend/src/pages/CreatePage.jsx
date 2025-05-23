@@ -11,9 +11,20 @@ const CreatePage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     console.log("Note created:", { title, content });
+    const newNote = { title, content, id: Date.now() };
+
+    // Fetch existing notes from localStorage
+    const existingNotes = JSON.parse(localStorage.getItem("notes")) || [];
+    // Add new note to the list
+    const updatedNotes = [newNote, ...existingNotes];
+    // Save back to localStorage
+    localStorage.setItem("notes", JSON.stringify(updatedNotes));
+
     setTitle("");
     setContent("");
+
     toast.success("Note created successfully!");
     navigate("/");
   };
