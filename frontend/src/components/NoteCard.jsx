@@ -32,7 +32,7 @@ const NoteCard = ({ note, onDelete }) => {
           />
         </div>
         <span className="text-sm text-gray-500">
-          {note.updatedAt
+          {note.updatedAt && note.updatedAt !== note.createdAt
             ? `Edited: ${new Date(note.updatedAt).toLocaleDateString()}`
             : `Created: ${new Date(
                 note.createdAt || note.id

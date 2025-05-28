@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const NoteForm = ({ initialNote, onSubmit, buttonLabel = "Save Note" }) => {
   const [title, setTitle] = useState(initialNote?.title || "");
   const [content, setContent] = useState(initialNote?.content || "");
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current?.focus(); // 2. Focus on mount
+  }, []);
 
   useEffect(() => {
     if (initialNote) {
@@ -19,6 +25,7 @@ const NoteForm = ({ initialNote, onSubmit, buttonLabel = "Save Note" }) => {
   return (
     <form onSubmit={handleSubmit}>
       <input
+        ref={inputRef}
         type="text"
         placeholder="Title"
         value={title}
