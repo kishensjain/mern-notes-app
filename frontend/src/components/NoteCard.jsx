@@ -6,7 +6,11 @@ const NoteCard = ({ note, onDelete }) => {
   const navigate = useNavigate();
 
   const handleEdit = () => {
-    navigate(`/edit/${note.id}`);
+    navigate(`/edit/${note._id || note.id}`); // depending on your backend ID
+  };
+
+  const handleDelete = () => {
+    onDelete(note._id || note.id);
   };
 
   return (
@@ -24,13 +28,15 @@ const NoteCard = ({ note, onDelete }) => {
           />
           <Trash2Icon
             className="cursor-pointer hover:text-red-600"
-            onClick={() => onDelete(note.id)}
+            onClick={handleDelete}
           />
         </div>
         <span className="text-sm text-gray-500">
           {note.updatedAt
             ? `Edited: ${new Date(note.updatedAt).toLocaleDateString()}`
-            : `Created: ${new Date(note.id).toLocaleDateString()}`}
+            : `Created: ${new Date(
+                note.createdAt || note.id
+              ).toLocaleDateString()}`}
         </span>
       </div>
     </div>
