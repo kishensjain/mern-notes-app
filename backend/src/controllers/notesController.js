@@ -1,4 +1,5 @@
 import Note from "../models/note.js";
+import mongoose from "mongoose";
 
 // GET all notes
 export const getAllNotes = async (req, res) => {
@@ -15,7 +16,7 @@ export const getAllNotes = async (req, res) => {
 export const getNoteById = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.sstatus(400).json({ message: "Invalid note ID" });
+    return res.status(400).json({ message: "Invalid note ID" });
   }
   try {
     const note = await Note.findById(req.params.id);
@@ -47,10 +48,10 @@ export const createNote = async (req, res) => {
 
 // PUT update a note
 export const updateNote = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
   const { title, content } = req.body;
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.sstatus(400).json({ message: "Invalid note ID" });
+    return res.status(400).json({ message: "Invalid note ID" });
   }
   // if (!title && !content) {
   //   return res.status(400).json({ message: "At least one field (title or content) is required to update" });
@@ -58,9 +59,9 @@ export const updateNote = async (req, res) => {
 
   try {
     const updatedNote = await Note.findByIdAndUpdate(
-      req.params.id,
+      id,
       { title, content },
-      { new: true,  omitUndefined: true }
+      { new: true, omitUndefined: true }
     );
     if (!updatedNote)
       return res.status(404).json({ message: "Note not found" });
@@ -73,9 +74,9 @@ export const updateNote = async (req, res) => {
 
 // DELETE a note
 export const deleteNote = async (req, res) => {
-  const { title, content } = req.body;
+  const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.sstatus(400).json({ message: "Invalid note ID" });
+    return res.status(400).json({ message: "Invalid note ID" });
   }
   try {
     const deletedNote = await Note.findByIdAndDelete(req.params.id);
