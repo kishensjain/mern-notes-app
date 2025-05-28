@@ -13,6 +13,10 @@ export const getAllNotes = async (req, res) => {
 
 // GET note by ID
 export const getNoteById = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.sstatus(400).json({ message: "Invalid note ID" });
+  }
   try {
     const note = await Note.findById(req.params.id);
     if (!note) return res.status(404).json({ message: "Note not found" });
@@ -28,7 +32,9 @@ export const createNote = async (req, res) => {
   try {
     const { title, content } = req.body;
     if (!title || !content) {
-      return res.status(400).json({ message: "Title and content are required" });
+      return res
+        .status(400)
+        .json({ message: "Title and content are required" });
     }
     const note = new Note({ title, content });
     const savedNote = await note.save();
@@ -41,14 +47,23 @@ export const createNote = async (req, res) => {
 
 // PUT update a note
 export const updateNote = async (req, res) => {
+  const { id } = req.params
+  const { title, content } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.sstatus(400).json({ message: "Invalid note ID" });
+  }
+  // if (!title && !content) {
+  //   return res.status(400).json({ message: "At least one field (title or content) is required to update" });
+  // }
+
   try {
-    const { title, content } = req.body;
     const updatedNote = await Note.findByIdAndUpdate(
       req.params.id,
       { title, content },
-      { new: true }
+      { new: true,  omitUndefined: true }
     );
-    if (!updatedNote) return res.status(404).json({ message: "Note not found" });
+    if (!updatedNote)
+      return res.status(404).json({ message: "Note not found" });
     res.status(200).json(updatedNote);
   } catch (error) {
     console.error("Error in updateNote controller:", error.message);
@@ -58,9 +73,14 @@ export const updateNote = async (req, res) => {
 
 // DELETE a note
 export const deleteNote = async (req, res) => {
+  const { title, content } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.sstatus(400).json({ message: "Invalid note ID" });
+  }
   try {
     const deletedNote = await Note.findByIdAndDelete(req.params.id);
-    if (!deletedNote) return res.status(404).json({ message: "Note not found" });
+    if (!deletedNote)
+      return res.status(404).json({ message: "Note not found" });
     res.status(200).json({ message: "Note deleted successfully", deletedNote });
   } catch (error) {
     console.error("Error in deleteNote controller:", error.message);
