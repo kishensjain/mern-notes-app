@@ -14,10 +14,10 @@ const NoteCard = ({ note, onDelete }) => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded p-4 flex flex-col justify-between">
+    <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-md rounded p-4 flex flex-col justify-between transition-colors duration-300">
       <div>
-        <h3 className="text-xl font-bold text-violet-600 mb-2">{note.title}</h3>
-        <p className="text-gray-700">{note.content}</p>
+        <h3 className="text-xl font-bold text-violet-600 dark:text-violet-400 mb-2">{note.title}</h3>
+        <p className="text-gray-700 dark:text-gray-300">{note.content}</p>
       </div>
 
       <div className="flex items-center justify-between mt-4">
@@ -31,7 +31,7 @@ const NoteCard = ({ note, onDelete }) => {
             onClick={handleDelete}
           />
         </div>
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-gray-500 dark:text-gray-400">
           {note.updatedAt && note.updatedAt !== note.createdAt
             ? `Edited: ${new Date(note.updatedAt).toLocaleDateString()}`
             : `Created: ${new Date(
